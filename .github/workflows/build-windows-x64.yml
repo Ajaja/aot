@@ -29,6 +29,8 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
         -DWIN32=ON
+        -DBISON_TOOL="win_bison"
+        -DFLEX_TOOL="win_flex"        
         -DCMAKE_CXX_FLAGS="/I${{ github.workspace }} /DWIN32 /utf-8 /EHsc"
         -DCMAKE_C_FLAGS="/I${{ github.workspace }} /DWIN32 /utf-8"
 
