@@ -40,17 +40,26 @@ if (WIN32)
     include_directories (AFTER ${WIN_FLEX_FOLDER})
 endif()
 
+if(NOT BISON_TOOL)
+    find_program(BISON_TOOL win_bison)
+endif()
+if(NOT FLEX_TOOL)
+    find_program(FLEX_TOOL win_flex)
+endif()
+
 message ("bison_tool = " ${BISON_TOOL})
-add_custom_command(OUTPUT "${PROJECT_SOURCE_DIR}/chunker_yacc.cpp" "${PROJECT_SOURCE_DIR}/chunker_yacc.hpp"
+add_custom_command(
+    OUTPUT "${PROJECT_SOURCE_DIR}/chunker_yacc.cpp" "${PROJECT_SOURCE_DIR}/chunker_yacc.hpp"
     DEPENDS "${PROJECT_SOURCE_DIR}/chunker.y"
-    COMMAND ${BISON_TOOL} -d -o chunker_yacc.cpp "${PROJECT_SOURCE_DIR}/chunker.y"
+    COMMAND "${BISON_TOOL}" -d -ochunker_yacc.cpp "${PROJECT_SOURCE_DIR}/chunker.y"
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
     VERBATIM
 )
 
-add_custom_command(OUTPUT "${PROJECT_SOURCE_DIR}/chunker_lex.cpp"
+add_custom_command(
+    OUTPUT "${PROJECT_SOURCE_DIR}/chunker_lex.cpp"
     DEPENDS "${PROJECT_SOURCE_DIR}/chunker.l" "${PROJECT_SOURCE_DIR}/chunker_yacc.hpp"
-    COMMAND ${FLEX_TOOL} -ochunker_lex.cpp chunker.l
+    COMMAND "${FLEX_TOOL}" -ochunker_lex.cpp -d "${PROJECT_SOURCE_DIR}/chunker.l"
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
     VERBATIM
 )
