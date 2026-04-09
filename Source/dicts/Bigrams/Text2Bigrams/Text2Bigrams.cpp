@@ -54,7 +54,7 @@ std::string	CreateTempFileName(std::string folder)
         }
     }
     auto filename = Format("bigrams.%i.tmp", max_id + 1);
-    return fs::path(folder) / filename;
+    return fs::path(folder).string() / filename;
 };
 
 /*
@@ -154,7 +154,7 @@ std::vector<std::string> ReadListFile(std::string path) {
 }
 
 void CBigramsCreator::WriteUnigrams() {
-    std::string path = fs::path(OutputFolder) / "unigrams.txt";
+    std::string path = fs::path(OutputFolder).string() / "unigrams.txt";
     LOGI << "Writing word frequences " << path;
     std::ofstream outp(path);
     if (!outp.is_open())
