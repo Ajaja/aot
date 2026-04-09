@@ -80,7 +80,7 @@ void CBigrams::Initialize(std::string path) {
     m_Word2Infos.clear();
     m_CorpusSize = 0;
 
-    std::string IndexFile = fs::path(path).string() / "bigrams.txt.wrd_idx";
+    std::string IndexFile = (fs::path(path) / "bigrams.txt.wrd_idx").string();
     LOGI << "load " << IndexFile;
     FILE *fp = fopen(IndexFile.c_str(), "r");
     if (!fp) {
@@ -104,7 +104,7 @@ void CBigrams::Initialize(std::string path) {
     fclose(fp);
     if (m_Bigrams) fclose(m_Bigrams);
 
-    std::string Bin1File = fs::path(path).string() / "bigrams.txt.bin1";
+    std::string Bin1File = (fs::path(path) / "bigrams.txt.bin1").string();
     LOGI << "  open " <<  Bin1File;
     m_Bigrams = fopen(Bin1File.c_str(), "rb");
     if (!m_Bigrams) {
@@ -113,7 +113,7 @@ void CBigrams::Initialize(std::string path) {
 
 
     if (m_BigramsRev) fclose(m_BigramsRev);
-    std::string Bin2File = fs::path(path).string() / "bigrams.txt.bin2";
+    std::string Bin2File = (fs::path(path) / "bigrams.txt.bin2").string();
     LOGI << "  open " <<  Bin2File;
     m_BigramsRev = fopen(Bin2File.c_str(), "rb");
     if (!m_BigramsRev) {
