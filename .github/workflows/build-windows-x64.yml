@@ -20,6 +20,57 @@ jobs:
     - name: Install Dependencies via vcpkg
       run: vcpkg install zlib:x64-windows plog:x64-windows
 
+    # MSVC compatibility patches for std::filesystem::path implicit conversions.
+    #
+    # Two classes of error are fixed:
+    #
+    # 1. std::string var = path  /  std::string var(path)
+    #    -> MSVC requires explicit .string() call
+    #    Fix: append .string() to the path expression
+    #
+    # 2. someFunc(path.c_str())
+    #    -> On Windows path::value_type is wchar_t, so c_str() returns
+    #       const wchar_t*, incompatible with C APIs expecting const char*.
+    #    Fix: replace .c_str() with .string().c_str()
+    #    (Safe heuristic: only applied to variables whose names contain
+    #     "path", "file", "dir" or "folder" to avoid touching std::string::c_str())
+    - name: Patch filesystem::path implicit conversions (MSVC compat)
+      shell: pwsh
+      run: |
+        $files = Get-ChildItem -Path aot\Source -Recurse -Include *.cpp,*.h
+        $totalPatched = 0
+
+        foreach ($file in $files) {
+          $original = Get-Content $file.FullName -Raw
+          if ($null -eq $original) { continue }
+
+          $patched = $original
+
+          # --- Fix 1 ---
+          # std::string var = pathExpr  /  std::string var(pathExpr)
+          # where pathExpr is not already suffixed with .string()
+          $patched = $patched -replace `
+            '(?<=(std::string\s+\w+\s*(?:=|\()\s*))(\w+(?:\.\w+)*)(?<!\.string\(\))(?=\s*[;)])', `
+            '$2.string()'
+
+          # --- Fix 2 ---
+          # path-like-variable.c_str()  ->  path-like-variable.string().c_str()
+          # Restricts to variable names containing path/file/dir/folder (case-insensitive)
+          # to avoid incorrectly patching std::string::c_str() calls.
+          $patched = $patched -replace `
+            '(?i)\b(\w*(?:path|file|dir|folder)\w*)\.c_str\(\)', `
+            '$1.string().c_str()'
+
+          if ($patched -ne $original) {
+            Set-Content $file.FullName $patched -NoNewline
+            Write-Host "Patched: $($file.FullName)"
+            $totalPatched++
+          }
+        }
+
+        Write-Host ""
+        Write-Host "Done. Patched $totalPatched file(s)."
+
     - name: Configure CMake
       run: >
         cmake -S aot -B build -A x64
