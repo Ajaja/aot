@@ -36,7 +36,7 @@ target_link_libraries(SimpleGrammarLib
     LemmatizerLib
 )
 
-if (WIN32 or _WIN32) 
+if (WIN32) 
     include_directories (AFTER ${WIN_FLEX_FOLDER})
 endif()
 
