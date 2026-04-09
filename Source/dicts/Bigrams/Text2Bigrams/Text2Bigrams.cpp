@@ -54,7 +54,7 @@ std::string	CreateTempFileName(std::string folder)
         }
     }
     auto filename = Format("bigrams.%i.tmp", max_id + 1);
-    return fs::path(folder).string() / filename;
+    return (fs::path(folder) / filename).string() ;
 };
 
 /*
@@ -154,7 +154,7 @@ std::vector<std::string> ReadListFile(std::string path) {
 }
 
 void CBigramsCreator::WriteUnigrams() {
-    std::string path = fs::path(OutputFolder).string() / "unigrams.txt";
+    std::string path = (fs::path(OutputFolder) / "unigrams.txt").string();
     LOGI << "Writing word frequences " << path;
     std::ofstream outp(path);
     if (!outp.is_open())
@@ -167,7 +167,7 @@ void CBigramsCreator::WriteUnigrams() {
     }
 }
 void CBigramsCreator::WriteBigrams() {
-    auto path = fs::path(OutputFolder) / "bigrams.txt.gz";
+    auto path = (fs::path(OutputFolder) / "bigrams.txt.gz").string();
     LOGI << "writing bigrams to ", path;
     MergeSortedFiles m(AllTempFiles, path.string());
     m.Merge();
