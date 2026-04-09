@@ -42,7 +42,7 @@ std::string	CreateTempFileName(std::string folder)
 {
     int max_id = 0;
     for (const auto & entry : fs::directory_iterator(folder)) {
-        std::string a = entry.path();
+        std::string a = entry.path().string();
         if (startswith(a, "bigrams.") && endswith(a, ".tmp")) {
             auto items = split_string(a, '.');
             if (items.size() == 3 && atoi(items[1].c_str()) > 0) {
