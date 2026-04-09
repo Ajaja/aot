@@ -7,6 +7,9 @@ jobs:
   build:
     runs-on: windows-latest
 
+    env:
+      RML: ${{ github.workspace }}\aot
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -19,13 +22,13 @@ jobs:
 
     - name: Configure CMake
       run: >
-        cmake -S aot -B build -A x64 
-        -DCMAKE_BUILD_TYPE=Release 
+        cmake -S aot -B build -A x64
+        -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
         -DWIN32=ON
         -DCMAKE_CXX_FLAGS="/I${{ github.workspace }} /DWIN32 /utf-8 /EHsc"
         -DCMAKE_C_FLAGS="/I${{ github.workspace }} /DWIN32 /utf-8"
-        
+
     - name: Build
       run: cmake --build build --config Release
 
