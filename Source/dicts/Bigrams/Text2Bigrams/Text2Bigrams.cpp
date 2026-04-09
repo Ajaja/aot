@@ -169,7 +169,7 @@ void CBigramsCreator::WriteUnigrams() {
 void CBigramsCreator::WriteBigrams() {
     auto path = (fs::path(OutputFolder) / "bigrams.txt.gz").string();
     LOGI << "writing bigrams to ", path;
-    MergeSortedFiles m(AllTempFiles, path.string());
+    MergeSortedFiles m(AllTempFiles, path);
     m.Merge();
 }
 
