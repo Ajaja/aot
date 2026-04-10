@@ -3,14 +3,19 @@ project(SimpleGrammarLib)
 
 # 1. Ensure tools are found if not provided by GitHub Actions
 if(NOT BISON_TOOL)
-    find_program(BISON_TOOL win_bison)
+    find_program(BISON_TOOL NAMES win_bison bison)
 endif()
 if(NOT FLEX_TOOL)
-    find_program(FLEX_TOOL win_flex)
+    find_program(FLEX_TOOL NAMES win_flex flex)
 endif()
 
-message("bison_tool = ${BISON_TOOL}")
-message("flex_tool  = ${FLEX_TOOL}")
+# Check if they were actually found to prevent silent failures later
+if(NOT BISON_TOOL OR NOT FLEX_TOOL)
+    message(FATAL_ERROR "Bison or Flex not found! BISON_TOOL=${BISON_TOOL}, FLEX_TOOL=${FLEX_TOOL}")
+endif()
+
+message(STATUS "Using Bison: ${BISON_TOOL}")
+message(STATUS "Using Flex:  ${FLEX_TOOL}")
 
 # 2. Fix add_library syntax and file list
 add_library(SimpleGrammarLib
