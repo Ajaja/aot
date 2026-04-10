@@ -21,7 +21,10 @@ jobs:
       run: vcpkg install zlib:x64-windows plog:x64-windows
 
     - name: Install winflexbison
-      run: choco install winflexbison3 --yes
+      run: |
+        choco install winflexbison3 --yes
+        # Force the Chocolatey bin path into the GitHub Path environment
+        echo "C:\ProgramData\chocolatey\bin" >> $GITHUB_PATH
 
     - name: Configure CMake
       run: >
@@ -29,10 +32,8 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
         -DWIN32=ON
-        -DBISON_TOOL=win_bison
-        -DFLEX_TOOL=win_flex
-        -DCMAKE_CXX_FLAGS="/I${{ github.workspace }} /DWIN32 /utf-8 /EHsc"
-        -DCMAKE_C_FLAGS="/I${{ github.workspace }} /DWIN32 /utf-8"
+        -DCMAKE_CXX_FLAGS="/I${{ github.workspace }}/aot /DWIN32 /utf-8 /EHsc"
+        -DCMAKE_C_FLAGS="/I${{ github.workspace }}/aot /DWIN32 /utf-8"
 
     - name: Build
       run: cmake --build build --config Release
