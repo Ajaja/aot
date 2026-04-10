@@ -27,7 +27,7 @@ jobs:
 
     - name: Configure CMake
       run: >
-        cmake -S aot -B build -A x64
+        cmake -S . -B build -A x64
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
         -DWIN32=ON
