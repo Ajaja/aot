@@ -1,0 +1,46 @@
+name: Build Windows x64
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    env:
+      RML: ${{ github.workspace }}\aot
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        path: aot
+
+    - name: Install Dependencies via vcpkg
+      run: vcpkg install zlib:x64-windows plog:x64-windows
+
+    - name: Install winflexbison
+      run: |
+        choco install winflexbison3 --yes
+        # Force the Chocolatey bin path into the GitHub Path environment
+        echo "C:\ProgramData\chocolatey\bin" >> $GITHUB_PATH
+
+    - name: Configure CMake
+      run: >
+        cmake -S aot -B build -A x64
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
+        -DWIN32=ON
+        -DCMAKE_CXX_FLAGS="/I${{ github.workspace }}/aot /DWIN32 /utf-8 /EHsc"
+        -DCMAKE_C_FLAGS="/I${{ github.workspace }}/aot /DWIN32 /utf-8"
+
+    - name: Build
+      run: cmake --build build --config Release
+
+    - name: Upload Release Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: aot-build
+        path: ./
+        if-no-files-found: error
