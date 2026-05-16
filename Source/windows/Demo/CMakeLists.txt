@@ -27,8 +27,6 @@ target_link_libraries(${PROJECT_NAME}
 
 )
 
-CopyExe(${PROJECT_NAME})
-
 
 if (BUILD_DICTS)
     add_dependencies (${PROJECT_NAME} MorphDicts)
