@@ -31,6 +31,7 @@ jobs:
         cmake -S aot -B build -A x64
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
+        -DBUILD_WINDOWS_GUI=ON
         -DWIN32=ON
         -DCMAKE_CXX_FLAGS="/I${{ github.workspace }}/aot /DWIN32 /utf-8 /EHsc"
         -DCMAKE_C_FLAGS="/I${{ github.workspace }}/aot /DWIN32 /utf-8"
