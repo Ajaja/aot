@@ -2,7 +2,6 @@
 #include "Morphwizard.h"
 #include "ParadigmDifferences.h"
 #include "SLFDocument.h"
-#include "morph_dict/morph_wizard/wizard.h"
 // CParadigmDifferences
 
 IMPLEMENT_DYNCREATE(CParadigmDifferences, CFormView)
